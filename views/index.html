@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Shortener</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      #short-url {
+        font-size: 18px;
+        font-weight: bold;
+        color: #007bff;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>URL Shortener</h1>
+      <label for="longUrl">Enter URL:</label>
+      <input type="text" id="longUrl" placeholder="Enter your long URL" />
+      <button id="shortenBtn">Shorten URL</button>
+      <div id="short-url"></div>
+    </div>
+
+    <script>
+      document
+        .getElementById("shortenBtn")
+        .addEventListener("click", function () {
+          const longUrl = document.getElementById("longUrl").value.trim();
+          if (!longUrl) {
+            alert("Please enter a valid URL");
+            return;
+          }
+
+          fetch("/shorten", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ longUrl }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+              document.getElementById(
+                "short-url"
+              ).innerHTML = `Shortened URL: <a href="${data.shortUrl}" target="_blank">${data.shortUrl}</a>`;
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              alert("An error occurred. Please try again later.");
+            });
+        });
+    </script>
+  </body>
+</html>
